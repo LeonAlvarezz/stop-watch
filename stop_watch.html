@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stop Watch</title>
+    <style>
+        *
+        {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        .container
+        {
+            min-height: 100vh;
+            display: grid;
+            place-content: center;
+        }
+
+        .box
+        {
+            background-color: black;
+            padding: 1rem 2rem;
+            border-radius: 2rem;
+        }
+        .box p
+        {
+            color: green;
+            font-family: consolas;
+            text-align: center;
+            font-size: 4rem;
+        }
+        .btn
+        {
+            margin-top: 10px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+        .btn button
+        {
+            background-color: #0d4999;
+            border: none;
+            padding: 1rem 1.5rem;
+            border-radius: 2rem;
+            font-size: 1rem;
+            color: white;
+            font-family: Roboto, sans-serif;
+        }
+        .btn button:hover
+        {
+            background-color: #0b346b;
+            cursor: pointer;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="box">
+            <p id="clock">00:00:00</p>
+            <div class="btn">
+                <button id="stopButton">Stop</button>
+                <button id="startButton">Start</button>
+                <button id="resetButton">Reset</button>                
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        const clock = document.getElementById("clock");
+        const stopButton = document.getElementById("stopButton");
+        const startButton = document.getElementById("startButton");
+        const resetButton = document.getElementById("resetButton");
+        let startTime=0;
+        let elapseTime=0;
+        let sec = 0;
+        let hour = 0;
+        let min = 0;
+        let pause = true;
+        let intervalID;
+        let speed = 1000;
+        startButton.addEventListener('click', ()=>{
+            if(pause)
+            {
+                startTheClock();
+            }
+        })
+
+        stopButton.addEventListener('click', ()=>{
+            if(!pause)
+            {
+                pauseTheClock();
+            }
+        })
+
+        resetButton.addEventListener('click', ()=>{
+            pauseTheClock();
+            pause = true;
+            startTime = 0;
+            elapseTime = 0;
+            hour = 0;
+            min = 0;
+            sec = 0;
+            clock.textContent = `00:00:00`;
+            startTheClock();
+        })
+
+        function updateTime()
+        {
+            elapseTime = Date.now() - startTime;
+            sec = Math.floor((elapseTime/speed) % 60);
+            min = Math.floor((elapseTime/(speed*60)) % 60);
+            hour = Math.floor((elapseTime/(speed*60*60)) % 60);
+            sec = setZero(sec);
+            min = setZero(min);
+            hour = setZero(hour);
+            clock.textContent = `${hour}:${min}:${sec}`;
+        }
+        function pauseTheClock()
+        {
+            pause = true
+                elapseTime = Date.now() - startTime;
+                clearInterval(intervalID);
+        }
+        function startTheClock()
+        {
+            pause = false;
+            startTime = Date.now() - elapseTime;
+            intervalID = setInterval(updateTime, 1000);
+        }
+
+        function setZero(number)
+        {
+            return ("0" + number).length > 2 ? number: "0" + number;
+        }
+    </script>
+</body>
+</html> 
